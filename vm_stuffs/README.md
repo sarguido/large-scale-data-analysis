@@ -16,6 +16,14 @@ To start a VM cd into this directory and run:
 vagrant up
 ```
 
+All files in this directory will be available and synced to the vm in the `/vagrant` directory.  Makes it easy to edit files locally but then run them on the vm.
+
+To ssh into the vm, run:
+
+```
+vagrant ssh
+```
+
 When you are done, run:
 
 ```
