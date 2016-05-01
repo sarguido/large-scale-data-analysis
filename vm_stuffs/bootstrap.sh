@@ -1,23 +1,18 @@
 #!/usr/bin/env bash
 
-# Update Package Info
-apt-get update
-
-# Install Java
-apt-get install -y openjdk-7-jdk
-
-# Install some nice to haves
-apt-get install -y curl vim tmux
 
 # CDH Setup steps based on http://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Quick-Start/cdh5qs_yarn_pseudo.html
-# Install CDH
+
 cat > /etc/apt/sources.list.d/cloudera.list <<EOF
 deb [arch=amd64] http://archive.cloudera.com/cdh5/ubuntu/precise/amd64/cdh precise-cdh5 contrib
 deb-src http://archive.cloudera.com/cdh5/ubuntu/precise/amd64/cdh precise-cdh5 contrib
 EOF
-curl -s http://archive.cloudera.com/cdh5/ubuntu/precise/amd64/cdh/archive.key | apt-key add -
+wget -O - http://archive.cloudera.com/cdh5/ubuntu/precise/amd64/cdh/archive.key | apt-key add -
+
 apt-get update
-apt-get install -y hadoop-conf-pseudo
+
+# Install ALL THE THINGS
+apt-get install -y openjdk-7-jdk hadoop-conf-pseudo curl vim tmux python-dev python-pip libyaml-dev
 
 chown hadoop /var/log/hadoop-*
 
@@ -45,5 +40,18 @@ service hadoop-mapreduce-historyserver start
 
 # Create User Directories
 echo "****** CREATING USER DIRECTORIES IN HDFS ********"
- sudo -u hdfs hadoop fs -mkdir -p /user/vagrant
- sudo -u hdfs hadoop fs -chown vagrant /user/vagrant
+sudo -u hdfs hadoop fs -mkdir -p /user/vagrant
+sudo -u hdfs hadoop fs -chown vagrant /user/vagrant
+
+# Install Python Things
+pip install mrjob
+
+
+echo "****** RESTARTING YARN ********"
+service hadoop-yarn-resourcemanager restart
+service hadoop-yarn-nodemanager restart
+service hadoop-mapreduce-historyserver restart
+
+
+echo "****** INSTALLING SPARK ********"
+apt-get install spark-core spark-master spark-worker spark-history-server spark-python
