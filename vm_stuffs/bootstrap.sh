@@ -7,12 +7,25 @@ cat > /etc/apt/sources.list.d/cloudera.list <<EOF
 deb [arch=amd64] http://archive.cloudera.com/cdh5/ubuntu/precise/amd64/cdh precise-cdh5 contrib
 deb-src http://archive.cloudera.com/cdh5/ubuntu/precise/amd64/cdh precise-cdh5 contrib
 EOF
-wget -O - http://archive.cloudera.com/cdh5/ubuntu/precise/amd64/cdh/archive.key | apt-key add -
+wget -q -O - http://archive.cloudera.com/cdh5/ubuntu/precise/amd64/cdh/archive.key | apt-key add -
 
 apt-get update
 
+# Install Java
+apt-get install python-software-properties -y
+add-apt-repository ppa:webupd8team/java -y
+apt-get update
+
+echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
+
+apt-get install oracle-java7-installer -y
+
+echo "JAVA_HOME=/usr/lib/jvm/java-7-oracle/" >> /etc/environment
+source /etc/environment
+
 # Install ALL THE THINGS
-apt-get install -y openjdk-7-jdk hadoop-conf-pseudo curl vim tmux python-dev python-pip libyaml-dev
+apt-get install -y hadoop-conf-pseudo curl vim tmux python-dev python-pip libyaml-dev
 
 chown hadoop /var/log/hadoop-*
 
@@ -54,4 +67,10 @@ service hadoop-mapreduce-historyserver restart
 
 
 echo "****** INSTALLING SPARK ********"
-apt-get install spark-core spark-master spark-worker spark-history-server spark-python
+# via http://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Installation-Guide/cdh5ig_spark_install.html
+apt-get install -y spark-core spark-master spark-worker spark-history-server spark-python
+
+sudo -u hdfs hadoop fs -mkdir /user/spark
+sudo -u hdfs hadoop fs -mkdir /user/spark/applicationHistory
+sudo -u hdfs hadoop fs -chown -R spark:spark /user/spark
+sudo -u hdfs hadoop fs -chmod 1777 /user/spark/applicationHistory
