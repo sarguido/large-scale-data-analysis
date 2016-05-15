@@ -1,8 +1,20 @@
 #!/usr/bin/env python
 from collections import Counter
+from operator import itemgetter
 import sys
 
 import ujson as json
+
+
+def get_top_n(counter, n):
+    ordered = sorted(counter.iteritems(), key=itemgetter(1), reverse=True)[:n]
+
+    return ordered
+
+def output_results(kind, results):
+    for key, count in results:
+        print('{}\t{}\t{}'.format(kind, key, count))
+
 
 
 if __name__ == '__main__':
@@ -21,9 +33,10 @@ if __name__ == '__main__':
         # Increment the counter for the country
         country_clicks[data['c']] += 1
 
-    # Output our results
-    for ghash, count in link_clicks.iteritems():
-        print('link\t{}\t{}'.format(ghash, count))
+    # Sort and trim results
+    top_links = get_top_n(link_clicks, n=20)
+    top_countries = get_top_n(country_clicks, n=20)
 
-    for country, count in country_clicks.iteritems():
-        print('country\t{}\t{}'.format(country, count))
+    # Output results
+    output_results('link', top_links)
+    output_results('country', top_countries)
