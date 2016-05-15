@@ -30,3 +30,9 @@ When you are done, run:
 vagrant destroy
 ```
 
+
+
+## Web UI Links
+
+[Hadoop UI](http://my-hadoops:8088/cluster)
+[Spark UI](http://my-hadoops:18080/)

@@ -25,7 +25,7 @@ echo "JAVA_HOME=/usr/lib/jvm/java-7-oracle/" >> /etc/environment
 source /etc/environment
 
 # Install ALL THE THINGS
-apt-get install -y hadoop-conf-pseudo curl vim tmux python-dev python-pip libyaml-dev
+apt-get install -y hadoop-conf-pseudo curl vim tmux python-dev python-pip libyaml-dev jq
 
 chown hadoop /var/log/hadoop-*
 
@@ -57,7 +57,7 @@ sudo -u hdfs hadoop fs -mkdir -p /user/vagrant
 sudo -u hdfs hadoop fs -chown vagrant /user/vagrant
 
 # Install Python Things
-pip install mrjob
+pip install mrjob ujson
 
 
 echo "****** RESTARTING YARN ********"
