@@ -36,3 +36,6 @@ vagrant destroy
 
 [Hadoop UI](http://my-hadoops:8088/cluster)
 [Spark UI](http://my-hadoops:18080/)
+
+
+## Plan B - https://blog.cloudera.com/blog/2014/06/how-to-install-a-virtual-apache-hadoop-cluster-with-vagrant-and-cloudera-manager/

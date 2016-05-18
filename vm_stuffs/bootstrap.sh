@@ -11,6 +11,9 @@ wget -q -O - http://archive.cloudera.com/cdh5/ubuntu/precise/amd64/cdh/archive.k
 
 apt-get update
 
+echo "vm.swappiness = 10" >> /etc/sysctl.conf
+sysctl vm.swappiness=10
+
 # Install Java
 apt-get install python-software-properties -y
 add-apt-repository ppa:webupd8team/java -y
@@ -28,6 +31,10 @@ source /etc/environment
 apt-get install -y hadoop-conf-pseudo curl vim tmux python-dev python-pip libyaml-dev jq
 
 chown hadoop /var/log/hadoop-*
+
+# Copy Configs
+cp -Rf /vagrant/configs/mapred-site.xml /etc/hadoop/conf/mapred-site.xml
+cp -Rf /vagrant/configs/yarn-site.xml /etc/hadoop/conf/yarn-site.xml
 
 # Format HDFS
 echo "****** Format HDFS ********"
