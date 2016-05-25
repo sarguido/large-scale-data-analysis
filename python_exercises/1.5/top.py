@@ -21,37 +21,40 @@ def output_results(kind, results):
 if __name__ == '__main__':
     # Setup the arg parser
     parser = argparse.ArgumentParser()
-    parser.add_argument('--topics-file', dest='topics_filename')
-    parser.add_argument('--filter-topic', dest='filter_topic')
+    parser.add_argument('--agencies-file', dest='agencies_filename')
+    parser.add_argument('--filter-agency', dest='filter_agency')
     args = parser.parse_args()
+
+    filter_agency = args.filter_agency
 
     # Initialize the counters
     link_clicks = Counter()
     country_clicks = Counter()
 
-    # Load topic data
-    topics_map = {}
-    filter_topic = args.filter_topic
-    with open(args.topics_filename, 'r') as topics_file:
-        for topics_line in topics_file:
-            topics_data = json.loads(topics_line)
-            topics_map[topics_data['g']] = topics_data['topics']
+    # Load agency data
+    agencies_map = {}
+    with open(args.agencies_filename, 'r') as agencies_file:
+        for agencies_line in agencies_file:
+            agencies_data = json.loads(agencies_line)
+            agencies_map[agencies_data['Global Hash']] = agencies_data
 
     # Read from STDIN one line at a time
     for line in sys.stdin:
         # Parse the line as JSON
         data = json.loads(line)
 
-        # Decide if this click has a relevant topic
-        topics = topics_map.get(data['g'], [])
-        if filter_topic not in topics:
-            continue
+        # Decide if this click has a relevant agency
+        agency_data = agencies_map.get(data['g'])
+        if agency_data is not None:
+            if filter_agency != agency_data['Agency']:
+                continue
 
         # Increment the counter for the global hash
         link_clicks[data['g']] += 1
 
         # Increment the counter for the country
-        country_clicks[data['c']] += 1
+        if 'c' in data:
+            country_clicks[data['c']] += 1
 
 
 
