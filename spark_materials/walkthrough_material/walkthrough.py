@@ -4,7 +4,7 @@
 # Count total clicks
 # RDD
 
-filename = 'path/to/file'
+filename = 'hdfs:///user/vagrant/sample_data/1usagov_data'
 data = sc.textFile(f)
 
 # What does the data look like?
@@ -31,18 +31,18 @@ df.groupBy('g').count().sort('count', ascending=False).show()
 
 # To get only decodes with a particular user hash, use square brackets to
 # access the column
-df.filter(df['g'] == '1WmFuVA').show()
+df.filter(df['g'] == '20fb21D').show()
 
 # To group by more than one column. Here we're grouping by the link hash
 # as well as the user hash, and retreiving the top 20 counts.
 df.groupBy('g', 'h').count().sort('count', ascending=False).show()
 
 # Join to topics data
-topics_file = 'path/to/topics'
-topics_df = sqlContext.read.json(topics_file)
+agency_file = 'hdfs:///user/vagrant/sample_data/agency_map'
+agency_df = sqlContext.read.json(agency_file)
 
 # Only join links where we have the topics - hence `inner`. To join everything,
 # even where topics may not exist, use `outer`.
-topics_links = df.join(topics_df, df.u == topics.u, 'inner').collect()
+agencies_links = df.join(agency_df, df['g'] == agency_df['Global Hash'], 'inner')
 
-topics_links.show()
+agencies_links.show()

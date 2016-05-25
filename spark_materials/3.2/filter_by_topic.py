@@ -1,9 +1,9 @@
 # Type this into the PySpark shell. 
 
-# Filtering by topic
+# Filtering by agency
 
-# Top links with X topic
-topics_df.filter(topics_df.topic == 'technology').groupBy('g').count().sort('count', ascending=False).show()
+# Top links with Library of Congress agency
+agencies_links.filter(agencies_links['Agency'] == 'Library of Congress').groupBy('g').count().sort('count', ascending=False).show()
 
-# Top countries with Xother topic
-topics_df.filter(topics_df.topic == 'zombies').groupBy('g').count().sort('count', ascending=False).show()
+# Top countries with Department of Education agency
+agencies_links.filter(agencies_links['Agency'] == 'Department of Education').groupBy('c').count().sort('count', ascending=False).show()
