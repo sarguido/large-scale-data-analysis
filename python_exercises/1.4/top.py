@@ -21,20 +21,20 @@ def output_results(kind, results):
 if __name__ == '__main__':
     # Setup the arg parser
     parser = argparse.ArgumentParser()
-    parser.add_argument('--topics-file', dest='topics_filename')
+    parser.add_argument('--agencies-file', dest='agencies_filename')
     args = parser.parse_args()
 
     # Initialize the counters
     link_clicks = Counter()
     country_clicks = Counter()
-    topic_clicks = Counter()
+    agency_clicks = Counter()
 
-    # Load topic data
-    topics_map = {}
-    with open(args.topics_filename, 'r') as topics_file:
-        for topics_line in topics_file:
-            topics_data = json.loads(topics_line)
-            topics_map[topics_data['g']] = topics_data['topics']
+    # Load agency data
+    agencies_map = {}
+    with open(args.agencies_filename, 'r') as agencies_file:
+        for agencies_line in agencies_file:
+            agencies_data = json.loads(agencies_line)
+            agencies_map[agencies_data['Global Hash']] = agencies_data
 
     # Read from STDIN one line at a time
     for line in sys.stdin:
@@ -45,20 +45,24 @@ if __name__ == '__main__':
         link_clicks[data['g']] += 1
 
         # Increment the counter for the country
-        country_clicks[data['c']] += 1
+        if 'c' in data:
+            country_clicks[data['c']] += 1
 
-        # Increment the topics counters
-        topics = topics_map.get(data['g'], [])
-        for topic in topics:
-            topic_clicks[topic] += 1
+        # Increment the agencies counters
+        agency = agencies_map.get(data['g'])
+        if agency:
+            agency_clicks[agency['Agency']] += 1
+        else:
+            agency_clicks['Unknown'] += 1
+
 
 
     # Sort and trim results
     top_links = get_top_n(link_clicks, n=20)
     top_countries = get_top_n(country_clicks, n=20)
-    top_topics = get_top_n(topic_clicks, n=20)
+    top_agencies = get_top_n(agency_clicks, n=20)
 
     # Output results
     output_results('link', top_links)
     output_results('country', top_countries)
-    output_results('topics', top_topics)
+    output_results('agency', top_agencies)
