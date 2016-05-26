@@ -8,7 +8,7 @@ from mrjob.step import MRStep
 from mrjob.protocol import JSONValueProtocol
 
 
-class MRCount(MRJob):
+class MRTop(MRJob):
 
     INPUT_PROTOCOL = JSONValueProtocol
 
@@ -49,4 +49,4 @@ class MRCount(MRJob):
         ])
 
 if __name__ == '__main__':
-    MRCount.run()
+    MRTop.run()
