@@ -5,7 +5,7 @@
 # RDD
 
 filename = 'hdfs:///user/vagrant/sample_data/1usagov_data'
-data = sc.textFile(f)
+data = sc.textFile(filename)
 
 # What does the data look like?
 data.first()
@@ -15,7 +15,7 @@ data.count()
 
 # DataFrame
 
-df = sqlContext.read.json(f)
+df = sqlContext.read.json(filename)
 
 #What does the data look like?
 df.show()
@@ -33,9 +33,18 @@ df.groupBy('g').count().sort('count', ascending=False).show()
 # access the column
 df.filter(df['g'] == '20fb21D').show()
 
+# To get the decodes with a particular hash and particular country, filter twice
+df.filter(df['g'] == '20fb21D').filter(df['c'] == 'US').show()
+
+# To filter by multiple values in the same column, use .isin()
+df.filter(df['g'].isin(['20fb21D', '1N8VwTx'])).show()
+
 # To group by more than one column. Here we're grouping by the link hash
 # as well as the user hash, and retreiving the top 20 counts.
 df.groupBy('g', 'h').count().sort('count', ascending=False).show()
+
+# To sort by multiple fields:
+df.groupBy('g', 'h').count().sort(['g', 'count'], ascending=False).show()
 
 # Join to topics data
 agency_file = 'hdfs:///user/vagrant/sample_data/agency_map'
