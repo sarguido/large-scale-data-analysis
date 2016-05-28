@@ -37,7 +37,7 @@ df.filter(df['g'] == '20fb21D').show()
 df.filter(df['g'] == '20fb21D').filter(df['c'] == 'US').show()
 
 # To filter by multiple values in the same column, use .isin()
-df.filter(df['g'].isin(['20fb21D', '1N8VwTx'])).show()
+df.filter(df['g'].isin(['20fb21D', '1W6dKrN'])).show()
 
 # To group by more than one column. Here we're grouping by the link hash
 # as well as the user hash, and retreiving the top 20 counts.
