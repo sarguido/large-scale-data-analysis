@@ -7,6 +7,13 @@ from mrjob.protocol import JSONValueProtocol
 class MRCount(MRJob):
 
     INPUT_PROTOCOL = JSONValueProtocol
+    OUTPUT_PROTOCOL = JSONValueProtocol
+
+    # def configure_options(self):
+    #     super(MRTop, self).configure_options()
+    #     self.add_passthrough_option(
+    #         '--filter-agency', help="Agency to filter results to"
+    #         )
 
     def mapper(self, _, item):
         pass
